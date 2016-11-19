@@ -49,8 +49,16 @@ Page({
                 console.log(res)
 
                 var file = res.tempFilePath
-                that.setData({
-                    file : file,
+                wx.saveFile({
+                    tempFilePath : res.tempFilePath,
+                    success : function(res) {
+                      console.log('save success')
+                      console.log(res.savedFilePath)
+                      that.setData({
+                          file : res.savedFilePath,
+                      })
+                        
+                    }
                 })
                 // wx.showToast({title : 'success'})
             },
@@ -72,7 +80,11 @@ Page({
     play(e) {
       console.log('play')
       console.log(this.data.file)
-       this.audioCtx.play();
+       // this.audioCtx.play();
+       wx.playVoice({
+          filePath : this.data.file,
+          
+       })
     },
 
     startPlay(e) {
