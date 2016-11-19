@@ -1,0 +1,4 @@
+<view>
+    <input value="text" bindchange="bindInputChange" value="{{text}}"/>
+    <button bindtap="bindButtonTagp">get</button>
+</view>
