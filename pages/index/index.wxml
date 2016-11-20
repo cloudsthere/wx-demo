@@ -1,19 +1,93 @@
-<!--index.wxml-->
-<view class="container">
 
-    <scroll-view class="message-wrapper">
-        <view wx:for="{{messages}}" wx:key="this">
-            <view>{{item.date.hour}} : {{item.date.minute}} : {{item.date.second}}</view>
-            <view>{{item.text}}</view>
+<view class="page">
+
+    <!-- 标题 -->
+    <view class="weui-cells weui-cells_after-title title-wrapper">
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+                <input bindinput="listenTitle" class="weui-input" placeholder="标题" value="{{title}}" />
+            </view>
         </view>
-    </scroll-view> 
+    </view>
+
+    <!-- 正文 -->
+    <view class="weui-cells__title">说说</view>
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell">
+            <view class="weui-cell__bd message-wrapper">
+                <scroll-view wx:for="{{messages}}" wx:key="this">
+                    <!-- <view>{{item.date.hour}} : {{item.date.minute}} : {{item.date.second}}</view> -->
+                    <view class="message-cell"><text>{{item.text}}</text></view>
+                </scroll-view>
+            </view> 
+        </view>
+    </view>
+
+    <!-- 配置区 -->
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_switch">
+            <view class="weui-cell__bd">提醒我</view>
+            <view class="weui-cell__bd">
+                <picker mode="date" value="{{date}}" start="{{dateRangeStart}}" end="2020-12-31" bindchange="datePickerListener">
+                    <view class="picker">{{date}}</view>
+                </picker>
+                <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="timePickerListener">
+                    <view class="picker">
+                    {{time}}
+                    </view>
+                </picker>
+            </view>
+            <view class="weui-cell__ft">
+                <switch checked />
+            </view>
+        </view>
+    </view>
+    <view class="weui-cells weui-cells_after-title">
+        <button class="weui-btn" bindtap="save">保存</button>
+    </view>
+
+
+
+
+
+    <!-- 输入区 -->
+    <view class="weui-cell weui-cell_input weui-cell_vcode input-panel">
+        <view class="weui-cell__hd">
+            <button class="weui-btn mini-btn" type="primary" bindtap="switcher" size="mini">语音</button>
+
+        </view>
+        <form bindreset="sendMessage">
+            <view class="weui-cell__bd">
+                <button wx:if="{{ speakMode}}">按住说话</button>
+                <input wx:if="{{ inputMode}}"  focus="{{inputFocus}}" class="weui-input border-bottom" bindinput="listenInput" placeholder="" />
+            </view>
+            <view class="weui-cell__ft">
+                <button class="weui-btn mini-btn" formType="reset" type="primary" size="mini">发送</button>
+            </view>
+        </form>
+    </view>
+
+
+</view>
+
+
+<!--<view class="page">
+
+
+
+
+    <view class="panel">
+        <button class="btn-record">语音</button>
+        <input />
+        <button class="btn-send">发送</button>
+
+    </view>
 
     <view class="input-wrapper">
         <form bindreset="sendMessage">
             <input name="message" placeholder="" value="{{inputValue}}"  bindchange="bindInputChange" auto-focus/>
             <button formType="reset">send</button>
             <button bindlongtap="record" bindtouchend="stopRecord">record</button>
-            <audio id="record" src="{{file}}" controls></audio>
             <button bindtap="play" bindplay="startPlay">play</button>
         </form>
     </view>
@@ -24,3 +98,4 @@
 
 
 </view>
+ 

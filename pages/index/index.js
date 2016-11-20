@@ -1,18 +1,77 @@
 //index.js
 //获取应用实例
 var app = getApp()
+var notes = app.globalData.notes;
 Page({
    data: {
-      focus: false,
+      id : '',
       messages : [],
       inputValue : '',
       file : 'file',
+      title : '',
+      speakMode : false,
+      inputMode : true,
+      inputFocus : false,
+      date : '',
+      time : '',
+      dateRangeStart : '',
     },
-    onReady : function(e) {
-        this.audioCtx = wx.createAudioContext('record')
+    onLoad : function(option) {
+        var id = option.query.id
+        if (!id) {
+            var ids = Object.keys(notes)
+            id = ids.length == 0 ? 1 : Math.max(...ids) + 1
+        }
+        console.log(id)
+
+        this.setData({
+            id : id,
+        })
+    },
+    onReady : function(e){
+        var date = new Date();
+        var today = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
+        var now = [date.getHours(), date.getMinutes()].join(':')
+
+
+        this.setData({
+            date : today, 
+            dateRangeStart : today,
+            time : now,
+        })
+    },
+    listenTitle : function(e) {
+        this.data.title = e.detail.value
+    },
+    save : function(e) {
+        notes[this.data.id] = this.data
+
+        console.log(notes)
+        wx.setStorageSync({
+          key:key,
+          data:notes
+        })
+    },
+    datePickerListener : function(e){
+        this.setData({
+            date : e.detail.value,
+        })
+    },
+    timePickerListener : function(e){
+        this.setData({
+            time : e.detail.value,
+        })
+    },
+    switcher : function(e) {
+        this.setData({
+            speakMode : ! this.data.speakMode,
+            inputMode : ! this.data.inputMode,
+            inputFocus : ! this.data.inputMode
+        })
     },
     sendMessage : function(e){
-        console.log(this.data.inputValue)
+        if (this.data.inputValue == '') return 
+        
         this.data.messages.push({
                 text : this.data.inputValue,
                 date  : {
@@ -25,10 +84,10 @@ Page({
             messages : this.data.messages,
         })
 
-        console.log(this.data)
+        // console.log(this.data)
     }, 
 
-    bindInputChange : function(e) {
+    listenInput : function(e) {
         this.data.inputValue = e.detail.value
     },
 
