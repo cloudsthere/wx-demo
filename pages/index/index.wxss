@@ -22,6 +22,15 @@
     background: #ccc;
 }
 
+.message-text {
+    background: #ccc,
+}
+
+
+.message-record {
+    background: #333,
+}
+
 
 .panel {
 

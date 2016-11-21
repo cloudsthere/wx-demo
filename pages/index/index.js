@@ -1,3 +1,5 @@
+import {formatTime} from '../../utils/util.js'
+
 //获取应用实例
 var app = getApp()
 var notes = app.globalData.notes
@@ -40,9 +42,7 @@ Page({
     },
     onReady : function(e){
         var date = this.data.note.reminderTimestamp ? new Date(this.data.note.reminderTimestamp) : new Date();
-        var today = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
-        var now = [date.getHours(), date.getMinutes()].join(':')
-
+        var [today, now] = formatTime(date).split(' ');
 
         this.setData({
             date : today, 
@@ -66,6 +66,10 @@ Page({
           key:'notes',
           data:notes, 
         })
+    },
+    onUnload : function(e) {
+        // e.preventDefault()
+        // this.save();
     },
     listenDatePicker : function(e){
 
@@ -95,20 +99,16 @@ Page({
     },
     sendMessage : function(e){
         if (this.data.inputValue == '') return 
-        
-        this.data.messages.push({
+        // console.log(this.data.inputValue)
+
+        this.data.note.messages.push({
                 text : this.data.inputValue,
-                date  : {
-                    hour : (new Date()).getHours(),
-                    minute : (new Date()).getMinutes(),
-                    second : (new Date()).getSeconds(),
-                }
             })
         this.setData({
-            messages : this.data.messages,
+            'note.messages' : this.data.note.messages,
         })
 
-        // console.log(this.data)
+        console.log(this.data.note)
     }, 
 
     listenInput : function(e) {
@@ -137,10 +137,14 @@ Page({
                     success : function(res) {
                       console.log('save success')
                       console.log(res.savedFilePath)
+
+                      that.data.note.messages.push({
+                              record : res.savedFilePath,
+                          })
                       that.setData({
-                          file : res.savedFilePath,
+                          'note.messages' : that.data.note.messages,
                       })
-                        
+                      console.log(that.data.note.messages)
                     }
                 })
                 // wx.showToast({title : 'success'})
@@ -161,11 +165,10 @@ Page({
     },
 
     play(e) {
-      console.log('play')
-      console.log(this.data.file)
+        console.log(e.currentTarget)
        // this.audioCtx.play();
        wx.playVoice({
-          filePath : this.data.file,
+          filePath : e.currentTarget.dataset.file,
           
        })
     },

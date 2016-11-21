@@ -15,9 +15,12 @@
     <view class="weui-cells weui-cells_after-title">
         <view class="weui-cell">
             <view class="weui-cell__bd message-wrapper">
-                <scroll-view wx:for="{{messages}}" wx:key="this">
+                <scroll-view wx:for="{{note.messages}}" wx:key="this">
                     <!-- <view>{{item.date.hour}} : {{item.date.minute}} : {{item.date.second}}</view> -->
-                    <view class="message-cell"><text>{{item.text}}</text></view>
+                    <view class="message-cell">
+                        <text wx:if="{{item.text}}" class="message-text">{{item.text}}</text>
+                        <text wx:if="{{item.record}}" data-file="{{item.record}}" bindtap="play" class="message-record">record</text>
+                    </view>
                 </scroll-view>
             </view> 
         </view>
@@ -58,7 +61,7 @@
         </view>
         <form bindreset="sendMessage">
             <view class="weui-cell__bd">
-                <button wx:if="{{ speakMode}}">按住说话</button>
+                <button wx:if="{{speakMode}}" bindtouchend="stopRecord" bindlongtap="record">按住说话</button>
                 <input wx:if="{{ inputMode}}"  focus="{{inputFocus}}" class="weui-input border-bottom" bindinput="listenInput" placeholder="" />
             </view>
             <view class="weui-cell__ft">
