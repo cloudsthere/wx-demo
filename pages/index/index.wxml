@@ -5,7 +5,7 @@
     <view class="weui-cells weui-cells_after-title title-wrapper">
         <view class="weui-cell weui-cell_input">
             <view class="weui-cell__bd">
-                <input bindinput="listenTitle" class="weui-input" placeholder="标题" value="{{title}}" />
+                <input bindinput="listenTitle" class="weui-input" placeholder="标题" value="{{note.title}}" />
             </view>
         </view>
     </view>
@@ -28,17 +28,17 @@
         <view class="weui-cell weui-cell_switch">
             <view class="weui-cell__bd">提醒我</view>
             <view class="weui-cell__bd">
-                <picker mode="date" value="{{date}}" start="{{dateRangeStart}}" end="2020-12-31" bindchange="datePickerListener">
+                <picker mode="date" value="{{date}}" start="{{dateRangeStart}}" end="2020-12-31"  bindchange="listenDatePicker">
                     <view class="picker">{{date}}</view>
                 </picker>
-                <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="timePickerListener">
+                <picker mode="time" value="{{time}}" start="00:00" end="23:59" bindchange="listenTimePicker">
                     <view class="picker">
                     {{time}}
                     </view>
                 </picker>
             </view>
             <view class="weui-cell__ft">
-                <switch checked />
+                <switch checked="{{note.reminder}}" bindchange="listenReminder"/>
             </view>
         </view>
     </view>

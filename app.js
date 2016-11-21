@@ -2,7 +2,9 @@
 App({
   onLaunch: function () {
     //调用API从本地缓存中获取数据
-    this.globalData.notes = wx.getStorageSync('notes') || {}
+    this.globalData.notes = wx.getStorageSync('notes') || []
+    // console.log(this.globalData.notes)
+
   },
   getUserInfo:function(cb){
     var that = this
@@ -23,6 +25,6 @@ App({
     }
   },
   globalData:{
-      notes : {},
+      notes : [],
   }
 })

@@ -1,14 +1,20 @@
-//index.js
 //获取应用实例
 var app = getApp()
-var notes = app.globalData.notes;
+var notes = app.globalData.notes
+
+
 Page({
    data: {
-      id : '',
-      messages : [],
+      note : {
+          id : '',
+          messages : [],
+          title : '',
+          reminder : false,
+          reminderTimestamp : '',
+          timestamp : '',
+      },
       inputValue : '',
       file : 'file',
-      title : '',
       speakMode : false,
       inputMode : true,
       inputFocus : false,
@@ -17,19 +23,23 @@ Page({
       dateRangeStart : '',
     },
     onLoad : function(option) {
-        var id = option.query.id
-        if (!id) {
-            var ids = Object.keys(notes)
-            id = ids.length == 0 ? 1 : Math.max(...ids) + 1
-        }
-        console.log(id)
+        // option.index = 1;
+        // console.log(this.data.note)
+        // console.log(option)
 
-        this.setData({
-            id : id,
-        })
+        // 绑定this.data.note与note[index]
+        if (option.index) {
+            this.data.note = notes[option.index]
+        } else {
+            var index = notes.length
+            notes[index] = this.data.note;
+            // this.data.note.id = id;
+        }
+        // console.log(this.data.note)
+        // console.log(notes)
     },
     onReady : function(e){
-        var date = new Date();
+        var date = this.data.note.reminderTimestamp ? new Date(this.data.note.reminderTimestamp) : new Date();
         var today = [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
         var now = [date.getHours(), date.getMinutes()].join(':')
 
@@ -41,27 +51,41 @@ Page({
         })
     },
     listenTitle : function(e) {
-        this.data.title = e.detail.value
+        this.data.note.title = e.detail.value
+    },
+    listenReminder : function(e) {
+        this.data.note.reminder = e.detail.value
+        this._updateTimestamp()
     },
     save : function(e) {
-        notes[this.data.id] = this.data
-
+        // console.log(this.data.note)
+        this.data.note.timestamp = new Date().getTime()
         console.log(notes)
-        wx.setStorageSync({
-          key:key,
-          data:notes
+        // 同步接口不可用
+        wx.setStorage({
+          key:'notes',
+          data:notes, 
         })
     },
-    datePickerListener : function(e){
+    listenDatePicker : function(e){
+
+        console.log(e)
         this.setData({
             date : e.detail.value,
         })
+        this._updateTimestamp()
     },
-    timePickerListener : function(e){
+    listenTimePicker : function(e){
         this.setData({
             time : e.detail.value,
         })
+        this._updateTimestamp()
     },
+    _updateTimestamp : function() {
+        let date = new Date([this.data.date, this.data.time + ':00'].join(' '))
+        this.data.note.reminderTimestamp = date.getTime();
+    },
+
     switcher : function(e) {
         this.setData({
             speakMode : ! this.data.speakMode,
